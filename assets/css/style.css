@@ -1,0 +1,137 @@
+/* For the First Page*/
+.homepage-hero-module {
+    border-right: none;
+    border-left: none;
+    position: relative;
+}
+.no-video .video-container video,
+.touch .video-container video {
+    display: none;
+}
+.no-video .video-container .poster,
+.touch .video-container .poster {
+    display: block !important;
+}
+.video-container {
+    position: relative;
+    bottom: 0%;
+    left: 0%;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background: #000;
+}
+.video-container .poster img {
+    width: 100%;
+    bottom: 0;
+    position: absolute;
+}
+.video-container .filter {
+    z-index: 100;
+    position: absolute;
+    background: rgba(0, 0, 0, 0.4);
+    width: 100%;
+}
+.video-container video {
+    position: absolute;
+    z-index: 0;
+    bottom: 0;
+}
+.video-container video.fillWidth {
+    width: 100%;
+}
+
+#title {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 80px;
+    color: #ffffff; 
+    position: absolute;
+    margin: 15% 30% 20% 30%;
+}
+
+#searchBar {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 30px;
+    color: #ffffff; 
+    position: absolute;
+    margin: -6% 5% 5% 30%;
+}
+
+.btn-outline-success {
+    border: 1px solid #ffffff;
+    color: #ffffff;
+}
+
+#searchBtn {
+    border: 1px solid #ffffff;
+    color: #ffffff; 
+    font-size: 15px;
+}
+
+
+/*Threat Level Page*/
+
+body {
+    background-image: url("https://i.imgur.com/0Dzm97N.png");
+    height: 100%; 
+    margin: 0;
+}
+
+#doughnutChart {
+    width: 50%;
+}
+
+#chart {
+    margin: 5% 0 3% 20%;
+    float: left;
+}
+
+#levelText {
+    margin: 15% 0 3% 45%;
+    position: absolute;
+}
+
+
+/*Map & Stats Page*/
+
+.statsWrapper {
+    margin-left: 3%;
+    margin-right: 3%;
+}
+
+#map {
+    background-size: cover; 
+    height: 100%;
+    width: 90%;
+    margin-right: 150px;
+    margin: -50px 100px 0 40px;
+}
+
+
+/*Provider List Page*/
+
+.container {
+    margin: 7% 2% 0 2%;
+}
+
+#providerWrapper {
+    background-image: url("https://i.imgur.com/UUvfTfB.jpg");
+    background-size: cover; 
+    height: 100%;
+    width: 90%;
+    text-align: left;
+    margin-right: 150px;
+}
+
+
+
+/*Map & Directions Page*/
+
+#directionWrapper {
+    background-image: url("https://i.imgur.com/SJhXBJq.jpg");
+    background-size: cover; 
+    height: 100%;
+    width: 90%;
+    text-align: left;
+    margin-right: 150px;
+}
