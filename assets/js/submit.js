@@ -12,17 +12,47 @@ $( document ).ready(function() {
     firebase.initializeApp(config);
     var database = firebase.database();
 
+
+
+
+    //USER INPUT HERE --------------------------------
     function startSearch(event){
-        //eventually have if/else statement depending on success of geolocation
         event.preventDefault();
-        var zipCode = $('input').val().trim();
-        console.log(zipCode)
-        localStorage.setItem('zipCode', zipCode );
+        var input= $('input').val().trim();
+        if(is_usZipCode(input)){
+            localStorage.setItem('zipCode', input );
+        }else if(is_cityState(input)){
+            var city = input.split(',')[0]
+            var state = (input.split(',')[1][0] === ' ') ? input.split(',')[1].slice(1,3) : input.split(',')[1];
+            localStorage.setItem('city', city);
+            localStorage.setItem('state', state);
+            cityToZLL()
+        }else{
+            console.log('Invalid input!')
+        }
         //get latitude/longitude info from zipcode
-        pushToFirebase();
         // location.href = 'threatlevel.html' /Do this after APIs calls have 
     }
     
+    //-------------------------------------------------
+
+    function is_usZipCode(str){
+        regexpZip = /^[0-9]{5}(?:-[0-9]{4})?$/;
+        if (regexpZip.test(str)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    function is_cityState(str){
+        regexpCityState = /([^,]+),\s*(\w{2})/;
+        if (regexpCityState.test(str)){
+            return true;
+        }else{
+            return false;
+        }
+    }
     
     function walgreensAPI(){
         var lat = localStorage.getItem('lat');
@@ -114,6 +144,16 @@ $( document ).ready(function() {
 
     //user can input city and state
     function cityToZLL(){
+        var city = localStorage.getItem('city');
+        var state = localStorage.getItem('state');
+        var url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + city + ','+ state + '&key=AIzaSyA6IzOwL3Sg_yNo0COz67cN8b8Xt330qdE'
+
+        $.get(url).done(function(response){
+            console.log(response);
+            localStorage.setItem('lat', response.results[0].geometry.location.lat)
+            localStorage.setItem('long', response.results[0].geometry.location.lng)
+            latLongToZip();
+        })
 
     }
 
@@ -132,8 +172,7 @@ $( document ).ready(function() {
         var url = 'http://api.flutrack.org/?time=7'
         var herokuUrl = 'https://cors-anywhere.herokuapp.com/' + url
         
-        $.get(herokuUrl).done(findTweetsInRadius
-        )
+        $.get(herokuUrl).done(findTweetsInRadius)
     }
 
     function findTweetsInRadius (response) {
@@ -194,6 +233,12 @@ $( document ).ready(function() {
                     count: 1,
                 }) 
             }
+        })
+    }
+
+    function mostSearchedCities () {
+        database.ref().orderByChild('count').once('value', function(snapshot){
+            console.log(snapshot.val())
         })
     }
     
