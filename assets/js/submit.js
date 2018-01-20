@@ -1,5 +1,17 @@
 $( document ).ready(function() {
 
+    //start firebase
+    var config = {
+        apiKey: "AIzaSyB8PyxH26WGIUtkUPRj_6YUGF1Dr2e9BTU",
+        authDomain: "red-water-hyenas.firebaseapp.com",
+        databaseURL: "https://red-water-hyenas.firebaseio.com",
+        projectId: "red-water-hyenas",
+        storageBucket: "red-water-hyenas.appspot.com",
+        messagingSenderId: "912121318083"
+      };
+    firebase.initializeApp(config);
+    var database = firebase.database();
+
     function startSearch(event){
         //eventually have if/else statement depending on success of geolocation
         event.preventDefault();
@@ -7,7 +19,7 @@ $( document ).ready(function() {
         console.log(zipCode)
         localStorage.setItem('zipCode', zipCode );
         //get latitude/longitude info from zipcode
-        zipToLatLong()
+        pushToFirebase();
         // location.href = 'threatlevel.html' /Do this after APIs calls have 
     }
     
@@ -24,7 +36,7 @@ $( document ).ready(function() {
                 "affId": "storesapi",
                 "lat": lat,
                 "lng": long,
-                "srchOpt": '',
+                "srchOpt": 'fs',
                 "nxtPrev": '',
                 "requestType": "locator",
                 "act": "fndStore",
@@ -36,10 +48,10 @@ $( document ).ready(function() {
         $.ajax({
             type: "POST",
             url: herokuUrl,
-            headers: {
-                "Access-Control-Allow-Origin": "x-requested-with",
-            },
-            processData: false,
+            // headers: {
+            //     "Access-Control-Allow-Origin": "*",
+            // },
+            // processData: false,
             contentType: 'application/json',
             data: JSON.stringify(WGobj),
         }).done(function(response){
@@ -52,20 +64,63 @@ $( document ).ready(function() {
     function zipToLatLong(){
         var zipCode = localStorage.getItem('zipCode')
         var url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + zipCode + '&key=AIzaSyA6IzOwL3Sg_yNo0COz67cN8b8Xt330qdE'
+        
         $.get(url).done(function(response){
             console.log(response);
+            //lat/long
             var info = response.results[0].geometry.location
             var lat = info.lat,
                 long = info.lng;
-            console.log(lat, long);
+
             localStorage.setItem('lat', lat.toString());
             localStorage.setItem('long', long.toString());
+
+            //city/state
+            response.results[0].address_components.forEach(updateCityStateZip)
+
         })
+    }
+
+    function latLongToZip(){
+        var lat = localStorage.getItem('lat');
+        var long = localStorage.getItem('long');
+        var latlng = lat + ',' + long;
+        var url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + latlng + '&key=AIzaSyA6IzOwL3Sg_yNo0COz67cN8b8Xt330qdE'
+
+        $.get(url).done(function(response){
+            console.log(response)
+
+            response.results[0].address_components.forEach(updateCityStateZip)
+            
+            
+        })
+
+    }
+
+    function updateCityStateZip(obj){
+        //find city
+        if(obj.types[0] === 'locality'){
+            localStorage.setItem('city', obj.short_name)
+        }
+        //find state
+        else if(obj.types[0] === "administrative_area_level_1"){
+            localStorage.setItem('state', obj.short_name)
+        }
+        //find zip code
+        else if(obj.types[0] === 'postal_code'){
+            localStorage.setItem('zipCode', obj.short_name)
+        }
+    }
+
+    //user can input city and state
+    function cityToZLL(){
+
     }
 
     function censusData(){
         var zipCode = localStorage.getItem('zipCode');
         var url = 'https://api.census.gov/data/2016/acs/acs5/subject?get=NAME,S0101_C01_001E&for=zip%20code%20tabulation%20area:' + zipCode + '&key=ac21ba4cee033cdd33b527b24debd43baf85c8dd'
+        
         $.get(url).done(function(response){
             console.log(response)
         })
@@ -76,6 +131,7 @@ $( document ).ready(function() {
     function getFluTweets () {
         var url = 'http://api.flutrack.org/?time=7'
         var herokuUrl = 'https://cors-anywhere.herokuapp.com/' + url
+        
         $.get(herokuUrl).done(findTweetsInRadius
         )
     }
@@ -104,6 +160,41 @@ $( document ).ready(function() {
         })
 
         console.log(nearbyTweets);
+    }
+
+    function pushToFirebase () {
+        var cityName = localStorage.getItem('city')
+        database.ref().orderByChild('city').equalTo(cityName).once("value", function(snapshot) {
+            console.log(snapshot.val());
+
+            if(snapshot.val()){
+                
+                snapshot.forEach(function(data) {
+                    console.log('Data Key: ' + data.key);
+                    var exists = data.key
+                    var count = snapshot.val()[exists].count
+                    console.log(count)
+                    count ++
+                    console.log(count)
+                    //add 1 to the count if its been searched again
+                    
+                        console.log('It already exists!')
+                        database.ref(exists).update({
+                            count: count++
+                        })
+                    })
+            }else{
+                console.log('Creating new entry')
+                database.ref().push({
+                    city: localStorage.getItem('city'),
+                    state: localStorage.getItem('state'),
+                    zipCode: localStorage.getItem('zipCode'),
+                    lat: localStorage.getItem('lat'),
+                    long: localStorage.getItem('long'),
+                    count: 1,
+                }) 
+            }
+        })
     }
     
     
