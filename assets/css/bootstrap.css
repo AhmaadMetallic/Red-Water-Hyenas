@@ -3519,7 +3519,7 @@ tbody.collapse.show {
 }
 
 .nav-link.disabled {
-  color: #868e96;
+  color: #FF4500;
 }
 
 .nav-tabs {
@@ -6130,8 +6130,7 @@ a.bg-dark:focus, a.bg-dark:hover {
 }
 
 .justify-content-between {
-  -ms-flex-pack: justify !important;
-      justify-content: space-between !important;
+      justify-content: right;
 }
 
 .justify-content-around {

@@ -1,60 +1,36 @@
 /* For the First Page*/
-.homepage-hero-module {
-    border-right: none;
-    border-left: none;
-    position: relative;
-}
-.no-video .video-container video,
-.touch .video-container video {
-    display: none;
-}
-.no-video .video-container .poster,
-.touch .video-container .poster {
-    display: block !important;
-}
-.video-container {
-    position: relative;
-    bottom: 0%;
-    left: 0%;
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
-    background: #000;
-}
-.video-container .poster img {
-    width: 100%;
-    bottom: 0;
-    position: absolute;
-}
-.video-container .filter {
-    z-index: 100;
-    position: absolute;
-    background: rgba(0, 0, 0, 0.4);
-    width: 100%;
-}
-.video-container video {
-    position: absolute;
-    z-index: 0;
-    bottom: 0;
-}
-.video-container video.fillWidth {
-    width: 100%;
-}
 
-#title {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 80px;
-    color: #ffffff; 
-    position: absolute;
-    margin: 8% 30% 20% 30%;
-}
+.logoBody {
+    background-image: url("https://s3.amazonaws.com/ooomf-com-files/8H0UdTsvRFqe03hZkNJr_New%20York%20-%20On%20the%20rock%20-%20Empire%20State%20Building.jpg");
+    height: 100%; 
+    margin: 0;
+        }
+
+  #title {
+            font-family: 'Fredoka One', cursive;
+            color: white;
+            font-size: 75px;
+            text-align: center;
+            padding-top: 18%;
+        }
+
+ #color-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f7464a;
+            opacity: 0.8;
+            z-index: -2;
+        }
 
 #searchBar {
     font-family: 'Courier New', Courier, monospace;
     font-size: 30px;
     color: #ffffff; 
-    position: absolute;
-    margin: -6% 5% 5% 30%;
+    margin: 20% 0 5% 28%;
+    padding-right: 26%;
 }
 
 .btn-outline-success {
@@ -66,10 +42,19 @@
     border: 1px solid #ffffff;
     color: #ffffff; 
     font-size: 15px;
+
 }
 
 
 /*Threat Level Page*/
+
+h5 {
+    color: #483D8B;
+}
+
+p {
+    color: #969696;
+}
 
 body {
     background-image: url("https://i.imgur.com/0Dzm97N.png");
@@ -91,12 +76,17 @@ body {
     position: absolute;
 }
 
+.font-bold {
+    color: #f7464a;
+}
+
 
 /*Map & Stats Page*/
 
 .statsWrapper {
     margin-left: 3%;
     margin-right: 3%;
+    color: #f7464a;
 }
 
 #map {
@@ -107,6 +97,13 @@ body {
     margin: -50px 100px 0 40px;
 }
 
+#textHeader {
+    color: #f7464a;
+}
+
+.navbar {
+    background-color: #FF4500;
+}
 
 /*Provider List Page*/
 
@@ -123,6 +120,9 @@ body {
     margin-right: 150px;
 }
 
+.grey-text {
+    color: #969696;
+}
 
 
 /*Map & Directions Page*/
