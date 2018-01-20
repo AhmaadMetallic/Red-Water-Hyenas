@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bootstrap 101 Template</title>
+
+  <!-- Reset & Normalize -->
+   <link rel="stylesheet" href="assets/css/reset.css"> 
+    <link rel="stylesheet" href="assets/css/normalize.css"> 
+
+  <!-- Bootstrap 3.0 Stylesheets -->
+       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"> 
+        <link rel="stylesheet" href="https://bootswatch.com/3/cerulean/bootstrap.min.css"> 
+        <!--<link rel="stylesheet" href="https://bootswatch.com/3/journal/bootstrap.min.css">-->
+  <!-- END Bootstrap 3.0 Stylesheets -->
+
+  <!-- Bootstrap 4.0 Stylesheets -->
+      <!--  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> -->
+   
+  <!-- END Bootstrap 4.0 Stylesheets -->
+  
+  <!-- Google Map Stylesheets -->
+   <link rel="stylesheet" href="assets/css/map.css"> 
+   <!-- END Google Map Stylesheets -->
+        
+  <!-- Google JQUERY Versions 3 and 2 CDN -->
+        <!--  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script> 
+  <!-- END Google JQUERY CDN -->
+      </head>
+      <body>
+        <nav class="navbar navbar-default">
+          <div class="container">
+            <div class="navbar-header">
+              <a class="navbar-brand" href="#">Your Name</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">About</a></li>
+                <li><a href="#">Portfolio</a></li>
+                <li><a href="#">Contact</a></li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+        <div class="container">
+          <div class="row">
+            <div class="col-md-8">
+              <div class="page-header">
+                <h1>About Me</h1>
+              </div>
+              <div class="row">
+               <div id="map"></div>
+               <!-- Replace the value of the key parameter with your own API key. -->
+               <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB4a9LrH0kRRVXjf8gpGIfo1UmF5OTaoQw&libraries=places&callback=initMap" async defer></script>
+               <script src="assets/js/MapInit.js"></script>
+
+             </div>
+           </div>
+         </div>
+
+
+          <!--  Google Maps APIs -->
+         
+          <!-- End Google Maps APIs -->
+
+
+        
+        </body>
+
+        </html>
