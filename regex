@@ -1,0 +1,32 @@
+//regex zip code, city, State Abr.
+
+function is_usZipCode(str)
+{
+	regexpZip = /^[0-9]{5}(?:-[0-9]{4})?$/;
+	
+	if (regexpZip.test(str))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+function is_cityState(str)
+{
+	regexpCityState = /^[A-Za-z]+,[ ]?[A-Za-z]+{2,}$/;
+	if (regexpCityState.test(str))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+console.log(is_usZipCode("03201-2150"));
+
+console.log(is_usZipCode("7892"));
