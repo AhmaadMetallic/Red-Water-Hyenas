@@ -12,7 +12,7 @@ $( document ).ready(function() {
     firebase.initializeApp(config);
     var database = firebase.database();
 
-
+    var tweetsNum, population
 
 
     //USER INPUT HERE --------------------------------
@@ -26,12 +26,10 @@ $( document ).ready(function() {
             var state = (input.split(',')[1][0] === ' ') ? input.split(',')[1].slice(1,3) : input.split(',')[1];
             localStorage.setItem('city', city);
             localStorage.setItem('state', state);
-            cityToZLL()
         }else{
             console.log('Invalid input!')
         }
-        //get latitude/longitude info from zipcode
-        // location.href = 'threatlevel.html' /Do this after APIs calls have 
+        calculateThreat() 
     }
     
     //-------------------------------------------------
@@ -163,6 +161,7 @@ $( document ).ready(function() {
         
         $.get(url).done(function(response){
             console.log(response)
+            population = Number(response[1][1]) //global var
         })
 
         //note: The SSL certificate used to load resources from https://api.census.gov will be distrusted in M70. Once distrusted, users will be prevented from loading these resources. See https://g.co/chrome/symantecpkicerts for more information. (Around April 2018)
@@ -199,6 +198,29 @@ $( document ).ready(function() {
         })
 
         console.log(nearbyTweets);
+        tweetsNum = nearbyTweets.length //global var
+    }
+
+    function calculateThreat(){
+        getFluTweets()
+        censusData()
+        setTimeout(function(){
+            console.log(tweetsNum)
+            console.log(population)
+            var tweetsToPeople = 140
+            var percentage = tweetsNum*tweetsToPeople / population
+            var threatLevel
+            console.log(percentage)
+            //change limits if necessary
+            if(percentage <= .062){
+                threatLevel = "Low"
+            }else if(percentage >= .23){
+                threatLevel = "High"
+            }else{
+                threatLevel = "Medium"
+            }
+            console.log('Threat level: ' + threatLevel)
+        },3500)
     }
 
     function pushToFirebase () {
