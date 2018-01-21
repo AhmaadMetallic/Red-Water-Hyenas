@@ -14,22 +14,24 @@ $( document ).ready(function() {
 
     var tweetsNum, population
 
-
+    mostSearchedCities()
     //USER INPUT HERE --------------------------------
     function startSearch(event){
         event.preventDefault();
         var input= $('input').val().trim();
         if(is_usZipCode(input)){
             localStorage.setItem('zipCode', input );
+            zipToLatLong()
         }else if(is_cityState(input)){
             var city = input.split(',')[0]
             var state = (input.split(',')[1][0] === ' ') ? input.split(',')[1].slice(1,3) : input.split(',')[1];
             localStorage.setItem('city', city);
             localStorage.setItem('state', state);
+            cityToZLL()
         }else{
             console.log('Invalid input!')
         }
-        calculateThreat() 
+        
     }
     
     //-------------------------------------------------
@@ -88,6 +90,33 @@ $( document ).ready(function() {
             console.log('ERROR', errorThrown)
         })
     }
+
+    function medicareInfo (){
+        var city = localStorage.getItem('city').toUpperCase()
+        var state = localStorage.getItem('state').toUpperCase()
+        var url = 'https://data.cms.gov/resource/q3yr-x26f.json?city=' + city + '&state_code=' + state + '&provider_type=Internal%20Medicine'
+
+        $.get(url).done(function(response){
+            console.log(response);
+            var docAddresses = []
+            //only return 10 addresses
+            var docArray = response.filter(function(doctor, ind){
+                if(docAddresses.length === 0){
+                    console.log(doctor)
+                    docAddresses.push(doctor["street_address_1"])
+                    return doctor
+                }else if(docAddresses.length < 10){
+                    //the address is new
+                    if(docAddresses.indexOf(doctor["street_address_1"]) === -1){
+                        docAddresses.push(doctor["street_address_1"])
+                        return doctor
+                    }
+                }
+            })
+            console.log(docAddresses);
+            console.log(docArray);
+        })
+    }
     
     function zipToLatLong(){
         var zipCode = localStorage.getItem('zipCode')
@@ -105,7 +134,7 @@ $( document ).ready(function() {
 
             //city/state
             response.results[0].address_components.forEach(updateCityStateZip)
-
+            pushToFirebase()
         })
     }
 
@@ -120,7 +149,7 @@ $( document ).ready(function() {
 
             response.results[0].address_components.forEach(updateCityStateZip)
             
-            
+            pushToFirebase()
         })
 
     }
@@ -204,6 +233,7 @@ $( document ).ready(function() {
     function calculateThreat(){
         getFluTweets()
         censusData()
+        //somehow change this to async later, or include in "done" method
         setTimeout(function(){
             console.log(tweetsNum)
             console.log(population)
@@ -225,7 +255,7 @@ $( document ).ready(function() {
 
     function pushToFirebase () {
         var cityName = localStorage.getItem('city')
-        database.ref().orderByChild('city').equalTo(cityName).once("value", function(snapshot) {
+        database.ref("locations/").orderByChild('city').equalTo(cityName).once("value", function(snapshot) {
             console.log(snapshot.val());
 
             if(snapshot.val()){
@@ -240,13 +270,13 @@ $( document ).ready(function() {
                     //add 1 to the count if its been searched again
                     
                         console.log('It already exists!')
-                        database.ref(exists).update({
+                        database.ref('locations/' + exists).update({
                             count: count++
                         })
                     })
             }else{
                 console.log('Creating new entry')
-                database.ref().push({
+                database.ref("locations/").push({
                     city: localStorage.getItem('city'),
                     state: localStorage.getItem('state'),
                     zipCode: localStorage.getItem('zipCode'),
@@ -259,7 +289,7 @@ $( document ).ready(function() {
     }
 
     function mostSearchedCities () {
-        database.ref().orderByChild('count').once('value', function(snapshot){
+        database.ref("locations/").orderByChild('count').limitToLast(3).once('value', function(snapshot){
             console.log(snapshot.val())
         })
     }
