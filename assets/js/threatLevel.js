@@ -1,125 +1,20 @@
 $( document ).ready(function() {
-
-    //start firebase
-    var config = {
-        apiKey: "AIzaSyB8PyxH26WGIUtkUPRj_6YUGF1Dr2e9BTU",
-        authDomain: "red-water-hyenas.firebaseapp.com",
-        databaseURL: "https://red-water-hyenas.firebaseio.com",
-        projectId: "red-water-hyenas",
-        storageBucket: "red-water-hyenas.appspot.com",
-        messagingSenderId: "912121318083"
-      };
-    firebase.initializeApp(config);
-    var database = firebase.database();
-
-    var tweetsNum, population
-
-    mostSearchedCities()
-    //USER INPUT HERE --------------------------------
-    function startSearch(event){
-        event.preventDefault();
-        var input= $('input').val().trim();
-        if(is_usZipCode(input)){
-            localStorage.setItem('zipCode', input );
-            zipToLatLong()
-        }else if(is_cityState(input)){
-            var city = input.split(',')[0]
-            var state = (input.split(',')[1][0] === ' ') ? input.split(',')[1].slice(1,3) : input.split(',')[1];
-            localStorage.setItem('city', city);
-            localStorage.setItem('state', state);
-            cityToZLL()
-        }else{
-            console.log('Invalid input!')
+    //the APIs haven't been called yet
+    if(!localStorage.getItem('threatLevel')){
+        //the user entered a city
+        if(localStorage.getItem('city')){
+            cityToZLL();
         }
-        
-        localStorage.removeItem('threatLevel');
-        localStorage.removeItem('doctors');
-    }
-    
-    //-------------------------------------------------
-
-    function is_usZipCode(str){
-        regexpZip = /^[0-9]{5}(?:-[0-9]{4})?$/;
-        if (regexpZip.test(str)){
-            return true;
-        }else{
-            return false;
+        //user entered zip code
+        else if(localStorage.getItem('zipCode')){
+            zipToLatLong();
         }
     }
-
-    function is_cityState(str){
-        regexpCityState = /([^,]+),\s*(\w{2})/;
-        if (regexpCityState.test(str)){
-            return true;
-        }else{
-            return false;
-        }
-    }
-    
-    function walgreensAPI(){
-        var lat = localStorage.getItem('lat');
-        var long = localStorage.getItem('long');
-        var url = 'https://services-qa.walgreens.com/api/stores/search'
-        var herokuUrl = "https://cors-anywhere.herokuapp.com/" + url
-
-        var WGobj = 
-            {
-                "apiKey": "4n8VgBaIAcwfqcxWAQSreiniwZAGXltd",
-                "affId": "storesapi",
-                "lat": lat,
-                "lng": long,
-                "srchOpt": 'fs',
-                "nxtPrev": '',
-                "requestType": "locator",
-                "act": "fndStore",
-                "view": "fndStoreJSON",
-                "devinf": '',
-                "appver": '',
-            }
-
-        $.ajax({
-            type: "POST",
-            url: herokuUrl,
-            // headers: {
-            //     "Access-Control-Allow-Origin": "*",
-            // },
-            // processData: false,
-            contentType: 'application/json',
-            data: JSON.stringify(WGobj),
-        }).done(function(response){
-            console.log(response)
-        }).fail(function(jqXHR, textStatus, errorThrown) {
-            console.log('ERROR', errorThrown)
-        })
+    //the APIs have been called
+    else{
+        console.log('The APIs have been called already!')
     }
 
-    function medicareInfo (){
-        var city = localStorage.getItem('city').toUpperCase()
-        var state = localStorage.getItem('state').toUpperCase()
-        var url = 'https://data.cms.gov/resource/q3yr-x26f.json?city=' + city + '&state_code=' + state + '&provider_type=Internal%20Medicine'
-
-        $.get(url).done(function(response){
-            console.log(response);
-            var docAddresses = []
-            //only return 10 addresses
-            var docArray = response.filter(function(doctor, ind){
-                if(docAddresses.length === 0){
-                    console.log(doctor)
-                    docAddresses.push(doctor["street_address_1"])
-                    return doctor
-                }else if(docAddresses.length < 10){
-                    //the address is new
-                    if(docAddresses.indexOf(doctor["street_address_1"]) === -1){
-                        docAddresses.push(doctor["street_address_1"])
-                        return doctor
-                    }
-                }
-            })
-            console.log(docAddresses);
-            console.log(docArray);
-        })
-    }
-    
     function zipToLatLong(){
         var zipCode = localStorage.getItem('zipCode')
         var url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + zipCode + '&key=AIzaSyA6IzOwL3Sg_yNo0COz67cN8b8Xt330qdE'
@@ -136,24 +31,11 @@ $( document ).ready(function() {
 
             //city/state
             response.results[0].address_components.forEach(updateCityStateZip)
-            pushToFirebase()
-        })
-    }
-
-    function latLongToZip(){
-        var lat = localStorage.getItem('lat');
-        var long = localStorage.getItem('long');
-        var latlng = lat + ',' + long;
-        var url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + latlng + '&key=AIzaSyA6IzOwL3Sg_yNo0COz67cN8b8Xt330qdE'
-
-        $.get(url).done(function(response){
-            console.log(response)
-
-            response.results[0].address_components.forEach(updateCityStateZip)
             
             pushToFirebase()
-        })
 
+            calculateThreat()
+        })
     }
 
     function updateCityStateZip(obj){
@@ -171,7 +53,6 @@ $( document ).ready(function() {
         }
     }
 
-    //user can input city and state
     function cityToZLL(){
         var city = localStorage.getItem('city');
         var state = localStorage.getItem('state');
@@ -182,6 +63,24 @@ $( document ).ready(function() {
             localStorage.setItem('lat', response.results[0].geometry.location.lat)
             localStorage.setItem('long', response.results[0].geometry.location.lng)
             latLongToZip();
+        })
+
+    }
+
+    function latLongToZip(){
+        var lat = localStorage.getItem('lat');
+        var long = localStorage.getItem('long');
+        var latlng = lat + ',' + long;
+        var url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + latlng + '&key=AIzaSyA6IzOwL3Sg_yNo0COz67cN8b8Xt330qdE'
+
+        $.get(url).done(function(response){
+            console.log(response)
+
+            response.results[0].address_components.forEach(updateCityStateZip)
+            
+            pushToFirebase();
+
+            calculateThreat();
         })
 
     }
@@ -252,6 +151,7 @@ $( document ).ready(function() {
                 threatLevel = "Medium"
             }
             console.log('Threat level: ' + threatLevel)
+            localStorage.setItem('threatLevel', threatLevel);
         },3500)
     }
 
@@ -290,14 +190,4 @@ $( document ).ready(function() {
         })
     }
 
-    function mostSearchedCities () {
-        database.ref("locations/").orderByChild('count').limitToLast(3).once('value', function(snapshot){
-            console.log(snapshot.val())
-        })
-    }
-    
-    
-    
-    
-    $('#searchBtn').click(startSearch)
 })
