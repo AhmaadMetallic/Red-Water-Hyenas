@@ -19,21 +19,20 @@ $( document ).ready(function() {
     function startSearch(event){
         event.preventDefault();
         var input= $('input').val().trim();
+        localStorage.clear();
+        
         if(is_usZipCode(input)){
             localStorage.setItem('zipCode', input );
-            zipToLatLong()
+            location.href = 'threatlevel.html';
         }else if(is_cityState(input)){
             var city = input.split(',')[0]
             var state = (input.split(',')[1][0] === ' ') ? input.split(',')[1].slice(1,3) : input.split(',')[1];
             localStorage.setItem('city', city);
             localStorage.setItem('state', state);
-            cityToZLL()
+            location.href = 'threatlevel.html'
         }else{
             console.log('Invalid input!')
         }
-        
-        localStorage.removeItem('threatLevel');
-        localStorage.removeItem('doctors');
     }
     
     //-------------------------------------------------

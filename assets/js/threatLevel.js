@@ -1,18 +1,35 @@
 $( document ).ready(function() {
+    var config = {
+        apiKey: "AIzaSyB8PyxH26WGIUtkUPRj_6YUGF1Dr2e9BTU",
+        authDomain: "red-water-hyenas.firebaseapp.com",
+        databaseURL: "https://red-water-hyenas.firebaseio.com",
+        projectId: "red-water-hyenas",
+        storageBucket: "red-water-hyenas.appspot.com",
+        messagingSenderId: "912121318083"
+      };
+    firebase.initializeApp(config);
+    var database = firebase.database();
+
+    var tweetsNum, population
+    
+    
     //the APIs haven't been called yet
     if(!localStorage.getItem('threatLevel')){
         //the user entered a city
         if(localStorage.getItem('city')){
+            console.log('CITY');
             cityToZLL();
         }
         //user entered zip code
         else if(localStorage.getItem('zipCode')){
+            console.log('ZIPCODE');
             zipToLatLong();
         }
     }
     //the APIs have been called
     else{
         console.log('The APIs have been called already!')
+        updateDOM();
     }
 
     function zipToLatLong(){
@@ -59,10 +76,18 @@ $( document ).ready(function() {
         var url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + city + ','+ state + '&key=AIzaSyA6IzOwL3Sg_yNo0COz67cN8b8Xt330qdE'
 
         $.get(url).done(function(response){
-            console.log(response);
-            localStorage.setItem('lat', response.results[0].geometry.location.lat)
-            localStorage.setItem('long', response.results[0].geometry.location.lng)
-            latLongToZip();
+            //the city doesn't exist
+            if(response.status === 'ZERO_RESULTS'){
+                var msg = "No results found! Please search for another city"
+                console.log(msg);
+            }
+            //city exists
+            else{
+                console.log(response);
+                localStorage.setItem('lat', response.results[0].geometry.location.lat)
+                localStorage.setItem('long', response.results[0].geometry.location.lng)
+                latLongToZip();
+            }
         })
 
     }
@@ -152,7 +177,14 @@ $( document ).ready(function() {
             }
             console.log('Threat level: ' + threatLevel)
             localStorage.setItem('threatLevel', threatLevel);
+
+            updateDOM();
         },3500)
+    }
+
+    function updateDOM(){
+        var threatLevel = localStorage.getItem('threatLevel').toUpperCase();
+        $('#threatLevel').text(threatLevel);
     }
 
     function pushToFirebase () {

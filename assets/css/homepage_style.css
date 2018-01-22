@@ -21,6 +21,7 @@ body {
     background-image: url("https://s3.amazonaws.com/ooomf-com-files/8H0UdTsvRFqe03hZkNJr_New%20York%20-%20On%20the%20rock%20-%20Empire%20State%20Building.jpg");
     background-size: cover;
     background-repeat: no-repeat;
+    height: 100vh;
 }
 
 #searchBar {
