@@ -15,8 +15,13 @@ $( document ).ready(function() {
     
     //the APIs haven't been called yet
     if(!localStorage.getItem('threatLevel')){
+        //user clicked pre-made button
+        if(localStorage.getItem('button-click')){
+            console.log('Yup, they clicked a button')
+            calculateThreat()
+        }
         //the user entered a city
-        if(localStorage.getItem('city')){
+        else if(localStorage.getItem('city')){
             console.log('CITY');
             cityToZLL();
         }

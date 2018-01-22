@@ -290,13 +290,50 @@ $( document ).ready(function() {
     }
 
     function mostSearchedCities () {
-        database.ref("locations/").orderByChild('count').limitToLast(3).once('value', function(snapshot){
+        database.ref("locations/").orderByChild('count').limitToLast(5).once('value', function(snapshot){
             console.log(snapshot.val())
+            var locations = snapshot.val()
+
+            for(var location in locations){
+                var city = locations[location].city,
+                    state = locations[location].state,
+                    cityState = city + ', ' + state,
+                    lat = locations[location].lat,
+                    long = locations[location].long,
+                    zip = locations[location].zipCode;
+
+                var btn = $('<button class="city-btn">');
+                btn.text(cityState);
+                btn.attr({
+                    'data-city': city,
+                    'data-state': state,
+                    'data-lat': lat,
+                    'data-long': long,
+                    'data-zipCode': zip
+                })
+                $('#most-searched').prepend(btn);
+            }
         })
+    }
+
+    function searchCity (){
+        console.log($(this).attr('data-city'))
+
+        localStorage.clear()
+        
+        localStorage.setItem('button-click', 'true')
+        localStorage.setItem('city', $(this).attr('data-city'))
+        localStorage.setItem('state', $(this).attr('data-state'))
+        localStorage.setItem('lat', $(this).attr('data-lat'))
+        localStorage.setItem('long', $(this).attr('data-long'))
+        localStorage.setItem('zipCode', $(this).attr('data-zipCode'))
+
+        location.href = 'threatlevel.html'
     }
     
     
     
     
     $('#searchBtn').click(startSearch)
+    $('#most-searched').on('click', '.city-btn', searchCity)
 })

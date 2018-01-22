@@ -71,4 +71,9 @@ $( document ).ready(function() {
             console.log(JSON.parse(localStorage.getItem('medicare')))
         })
     }
+
+    function updateDOM (){
+        var walgreens = JSON.parse(localStorage.getItem('walgreens'));
+        var medicare = JSON.parse(localStorage.getItem('medicare'));
+    }
 })
