@@ -4,6 +4,8 @@ $( document ).ready(function() {
     if(!localStorage.getItem('walgreens')){
         walgreensAPI();
         medicareInfo();
+    }else{
+        updateDOMwalgreens()
     }
 
     function walgreensAPI(){
@@ -37,8 +39,9 @@ $( document ).ready(function() {
             contentType: 'application/json',
             data: JSON.stringify(WGobj),
         }).done(function(response){
-            localStorage.setItem('walgreens', JSON.stringify(response));
+            localStorage.setItem('walgreens', JSON.stringify(response.stores));
             console.log(JSON.parse(localStorage.getItem('walgreens')))
+            updateDOMwalgreens()
 
         }).fail(function(jqXHR, textStatus, errorThrown) {
             console.log('ERROR', errorThrown)
@@ -72,8 +75,18 @@ $( document ).ready(function() {
         })
     }
 
-    function updateDOM (){
+    function updateDOMwalgreens (){
         var walgreens = JSON.parse(localStorage.getItem('walgreens'));
+        walgreens.forEach(function(location){
+            var wg = $('<li class="wg-location>"');
+            var address = location.stadd + ', ' + location.stct + ', ' + location.stst;
+            var phNumber = 	'\u1F4DE '  + location.stph.slice(0,5) + ' ' + location.stph.slice(5,8) + '-' + location.stph.slice(8,12);
+            var hours = 'Store hours: ' + location.storeOpenTime + '-' + location.storeCloseTime;
+            $('#walgreens-list').text(phNumber);
+        })
+    }
+
+    function updateDOMmedicare (){
         var medicare = JSON.parse(localStorage.getItem('medicare'));
     }
 })

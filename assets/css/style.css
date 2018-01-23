@@ -72,8 +72,8 @@ body {
 }
 
 #levelText {
-    margin: 15% 0 3% 45%;
-    position: absolute;
+    /* margin: 15% 0 3% 45%; */
+    /* position: absolute; */
 }
 
 .font-bold {
@@ -107,9 +107,9 @@ body {
 
 /*Provider List Page*/
 
-.container {
+/* .container {
     margin: 7% 2% 0 2%;
-}
+} */
 
 #providerWrapper {
     background-image: url("https://i.imgur.com/UUvfTfB.jpg");
@@ -134,4 +134,13 @@ body {
     width: 90%;
     text-align: left;
     margin-right: 150px;
+}
+
+.row{
+    margin-left:0px;
+    margin-right:0px;
+}
+
+#providers li:hover{
+    cursor: pointer;
 }
