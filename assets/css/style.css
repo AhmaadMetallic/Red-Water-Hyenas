@@ -79,16 +79,27 @@ body {
 
 #doughnutChart {
     width: 50%;
+    position: absolute;
 }
 
 #chart {
-    margin: 5% 0 3% 20%;
-    float: left;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;    
 }
 
 #levelText {
-    margin: 15% 0 3% 45%;
-    position: absolute;
+    margin: 2px 0px 0px 2px;
+    position: relative;
+    width: 100%;
+    text-align: center;
+}
+
+#RedBadge {
+    margin: 2px 0px 0px 2px;
+    position: relative;
+    width: 100%;
+    text-align: center;
 }
 
 
