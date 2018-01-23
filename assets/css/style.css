@@ -71,15 +71,18 @@ body {
     float: left;
 }
 
-#levelText {
+/* #levelText {
     /* margin: 15% 0 3% 45%; */
     /* position: absolute; */
-}
+/* } */ 
 
 .font-bold {
     color: #f7464a;
 }
 
+#threatLevel{
+    background-color: #969696;
+}
 
 /*Map & Stats Page*/
 

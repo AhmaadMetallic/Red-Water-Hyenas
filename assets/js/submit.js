@@ -26,12 +26,14 @@ $( document ).ready(function() {
             location.href = 'threatlevel.html';
         }else if(is_cityState(input)){
             var city = input.split(',')[0]
+            //get rid of space in front of state
             var state = (input.split(',')[1][0] === ' ') ? input.split(',')[1].slice(1,3) : input.split(',')[1];
             localStorage.setItem('city', city);
             localStorage.setItem('state', state);
             location.href = 'threatlevel.html'
         }else{
-            console.log('Invalid input!')
+            //try to have modal here instead
+            $('input').val('Invalid input!')
         }
     }
     
@@ -335,5 +337,6 @@ $( document ).ready(function() {
     
     
     $('#searchBtn').click(startSearch)
+    $('form').submit(startSearch)
     $('#most-searched').on('click', '.city-btn', searchCity)
 })

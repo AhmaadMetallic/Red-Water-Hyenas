@@ -203,7 +203,28 @@ $( document ).ready(function() {
 
     function updateDOMthreat(){
         var threatLevel = localStorage.getItem('threatLevel').toUpperCase();
+        var msg,
+            color
         $('#threatLevel').text(threatLevel);
+        switch (threatLevel){
+            case 'HIGH':
+                msg = "Go get the flu shot today (if you don't already have flu-like symptoms)!";
+                color = '#f7464a';
+                break
+            case 'MEDIUM':
+                msg = 'Flu activity may be above normal in your area, so go get the flu shot as soon as possible!';
+                color = '#FFD23F'
+                break
+            case 'LOW':
+                msg = 'But you should still get the flu shot anyway! Remember, flu shots are preventative, so getting one now may stop you from having the flu later.';
+                color = '#2EC4B6';
+                break
+            default:
+                msg = 'Unable to calculate threat level'
+                break
+        }
+        $('#message').text(msg);
+        $('#threatLevel').css('background-color', color);
     }
 
     function pushToFirebase () {
