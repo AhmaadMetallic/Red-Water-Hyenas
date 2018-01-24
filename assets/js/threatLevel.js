@@ -10,7 +10,7 @@ $( document ).ready(function() {
     firebase.initializeApp(config);
     var database = firebase.database();
 
-    var tweetsNum, population
+    var tweetsNum, population, map
     
     
     //the APIs haven't been called yet
@@ -369,8 +369,8 @@ $( document ).ready(function() {
         })
         var newString = words.join(' ');
         return newString;
-    }
-
+    }    
+    
     //----------CLICK EVENT FUNCTIONS------------
 
     function goToMaps (){
@@ -381,3 +381,72 @@ $( document ).ready(function() {
           );
     }
 })
+
+//-------GOOGLE MAPS-----------------------
+//had to put this outside document.ready or it wouldn't work...
+function initMap() {
+    setTimeout(function(){
+        console.log('Map Created!')
+        var myLatLng = {
+            lat: Number(localStorage.getItem('lat')), 
+            lng: Number(localStorage.getItem('long'))
+        };
+        
+        
+        map = new google.maps.Map(document.getElementById('google-map'), {
+          zoom: 11,
+          center: myLatLng
+        });
+
+        createWalgreensMarker()
+      
+        // var marker = new google.maps.Marker({
+        //   position: myLatLng,
+        //   map: map,
+        //   title: 'Hello World!'
+        // });
+    }, 1000) //wait for geocoding API to do its stuff
+    
+}
+
+function createWalgreensMarker (){
+    console.log('Creating Markers!')
+    var walgreens = JSON.parse(localStorage.getItem('walgreens'));
+    
+    walgreens.forEach(function(location, ind){
+
+        var latLong = {
+            lat: Number(location.stlat),
+            lng: Number(location.stlng)
+        }
+
+        //set up content of infowindow
+        var address = unUppercase(location.stadd + ', ' + location.stct) + ', ' + location.stst;
+        var phNumber = location.stph.slice(0,5) + ' ' + location.stph.slice(5,8) + '-' + location.stph.slice(8,12);
+        var hours = 'Store hours: ' + location.storeOpenTime + '-' + location.storeCloseTime;
+
+        var infowindow = new google.maps.InfoWindow({
+            content: '<b>Walgreens</b></br>' + address + '</br>' + phNumber + '</br>' + hours
+          });
+  
+        var marker = new google.maps.Marker({
+            position: latLong,
+            animation: google.maps.Animation.DROP,
+            map: map,
+            title: 'Walgreens'
+          });
+        
+          marker.addListener('click', function() {
+            infowindow.open(map, marker);
+          });
+    })
+}
+
+function unUppercase (string){
+    var words = string.split(' ');
+    words.forEach(function(word, ind){
+        words[ind] = word.charAt(0) + word.slice(1).toLowerCase();
+    })
+    var newString = words.join(' ');
+    return newString;
+}   

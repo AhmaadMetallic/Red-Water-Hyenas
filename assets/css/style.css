@@ -147,3 +147,7 @@ body {
 #providers li:hover{
     cursor: pointer;
 }
+
+#google-map{
+    height: 400px;
+}
