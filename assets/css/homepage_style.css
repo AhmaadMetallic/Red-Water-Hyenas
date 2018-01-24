@@ -1,3 +1,9 @@
+/*@media screen and (min-width: 480px) {
+    .navbar {
+    width: 250px;
+}
+}*/
+
 #title {
     font-family: 'Fredoka One', cursive;
     color: white;
@@ -32,10 +38,12 @@ body {
     margin: 15% 0 2% 32%; 
     padding-right: 26%;
 }
+.navbar form input {
+    margin: 0 -45px 1px 0px;
+}
 
-input{
-    letter-spacing: 1.5px;
-
+input {
+    letter-spacing: 1.2px;
 }
 
 .btn-outline-success {
@@ -98,4 +106,19 @@ input:-ms-input-placeholder {
 .city-btn:hover{
     transition: all .5s;
     background-color: rgb(42, 155, 144);
+}
+
+@media screen and (max-width: 575px) {
+.navbar  {
+           width:280px;
+           margin-left:5px;
+   }
+#searchBar {
+   font-family: 'Fredoka One', sans-serif;
+   font-size: 30px;
+   color: #ffffff;
+   /* will need to change this for buttons to show */
+   margin: 15% 0 2% 15%;
+   padding-right: 26%;
+}
 }
