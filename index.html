@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-    <link rel="stylesheet" href="assets/css/homepage_style.css">
     <link href="https://fonts.googleapis.com/css?family=Fredoka+One|Roboto" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <!-- Font Awesome -->
@@ -16,6 +15,7 @@
     <link href="assets/css/bootstrap.min.css" rel="stylesheet">
     <!-- Material Design Bootstrap -->
     <link href="assets/css/mdb.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/homepage_style.css">
 </head>
 
 <body>
@@ -25,11 +25,17 @@
         <nav class="navbar justify-content-between justify-content-center">
             <a class="navbar-brand">ENTER LOCATION</a>
             <form class="form-inline">
-                <input class="form-control mr-sm-2" type="search" placeholder="City, State, Zipcode" aria-label="SEARCH" style="color: #ffffff">
+                <input class="form-control mr-sm-2" type="search" placeholder="City, State or Zipcode" aria-label="SEARCH" style="color: #ffffff">
                  <a id="searchBtn" href="threatlevel.html">SEARCH</a>
             </form>
         </nav>
     </div>
+    <div id="most-searched">
+
+    </div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
     <!-- JQuery -->
     <script type="text/javascript" src="assets/js/jquery-3.2.1.min.js"></script>
     <!-- Bootstrap tooltips -->
@@ -40,6 +46,7 @@
     <script type="text/javascript" src="assets/js/mdb.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="assets/js/app.js"></script>
+    <script src="./assets/js/submit.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
 </body>

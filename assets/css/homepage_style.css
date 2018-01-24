@@ -21,14 +21,21 @@ body {
     background-image: url("https://s3.amazonaws.com/ooomf-com-files/8H0UdTsvRFqe03hZkNJr_New%20York%20-%20On%20the%20rock%20-%20Empire%20State%20Building.jpg");
     background-size: cover;
     background-repeat: no-repeat;
+    height: 100vh;
 }
 
 #searchBar {
-    font-family: 'Courier New', Courier, monospace;
+    font-family: 'Fredoka One', sans-serif;
     font-size: 30px;
     color: #ffffff;
-    margin: 20% 0 5% 32%;
+    /* will need to change this for buttons to show */
+    margin: 15% 0 2% 32%; 
     padding-right: 26%;
+}
+
+input{
+    letter-spacing: 1.5px;
+
 }
 
 .btn-outline-success {
@@ -71,3 +78,24 @@ input:-ms-input-placeholder {
     font-family: 'Open Sans', sans-serif;
 }
 
+#most-searched{
+  display: flex;
+  padding: 0 10%;
+  flex-wrap: wrap;  
+  justify-content: center;
+}
+
+.city-btn{
+    background-color: #2EC4B6;
+    color: white;
+    border-color: #2EC4B6;
+    margin: .5em 1em;
+    padding: .25em 1em;
+    border-radius: 1em;
+    transition: all .5s;
+}
+
+.city-btn:hover{
+    transition: all .5s;
+    background-color: rgb(42, 155, 144);
+}
