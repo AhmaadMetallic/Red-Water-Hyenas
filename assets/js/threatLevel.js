@@ -15,8 +15,12 @@ $( document ).ready(function() {
     
     //the APIs haven't been called yet
     if(!localStorage.getItem('threatLevel')){
-        //user clicked pre-made button
-        if(localStorage.getItem('button-click')){
+        //user clicks current city button
+        if(localStorage.getItem('current-click')){
+            latLongToZip();
+        }
+        //user clicked pre-made city button
+        else if(localStorage.getItem('button-click')){
             console.log('Yup, they clicked a button')
             calculateThreat();
             walgreensAPI();
@@ -165,9 +169,7 @@ $( document ).ready(function() {
             
             distDeg  = Math.sqrt(latDist*latDist + longDist*longDist)
             
-
             return distDeg < radiusDeg;
-            
             
         })
 

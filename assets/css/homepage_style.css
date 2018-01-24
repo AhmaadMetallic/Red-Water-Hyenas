@@ -98,4 +98,15 @@ input:-ms-input-placeholder {
 .city-btn:hover{
     transition: all .5s;
     background-color: rgb(42, 155, 144);
+    cursor: pointer;
+}
+
+#currentLoc-btn{
+    background-color: #FFD23F;
+    color: white;
+    border-color: #FFD23F;
+    margin: .5em 1em;
+    padding: .25em 1em;
+    border-radius: 1em;
+    transition: all .5s;
 }

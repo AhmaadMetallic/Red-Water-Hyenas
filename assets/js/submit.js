@@ -14,7 +14,19 @@ $( document ).ready(function() {
 
     var tweetsNum, population
 
+    //----DETECT USER LOCATION-------------------
+    navigator.geolocation.getCurrentPosition(
+        function(position){
+            $('#searchNow').removeClass('invisible');
+            localStorage.setItem('lat', position.coords.latitude);
+            localStorage.setItem('long', position.coords.longitude);
+            $('#most-searched').append('<button id="currentLoc-btn">Current Location</button>')
+        }
+    )
+    //------MAKE BLUE BUTTONS-----------------------
+    
     mostSearchedCities()
+    
     //USER INPUT HERE --------------------------------
     function startSearch(event){
         event.preventDefault();
@@ -164,9 +176,16 @@ $( document ).ready(function() {
 
         location.href = 'threatlevel.html'
     }
+
+    function searchCurrent (){
+        localStorage.setItem('current-click', 'true');
+        localStorage.removeItem('threatLevel');
+        location.href = 'threatlevel.html';
+    }
     
     
     $('#searchBtn').click(startSearch)
     $('form').submit(startSearch)
     $('#most-searched').on('click', '.city-btn', searchCity)
+    $('#most-searched').on('click', '#currentLoc-btn', searchCurrent)
 })
