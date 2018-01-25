@@ -29,15 +29,6 @@
           <a class="nav-link" href="threatlevel.html" style="padding-left: 45px; padding-right: 45px; color: #ffffff;">THREAT LEVEL<span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="map&stats.html" style="padding-left: 45px; padding-right: 45px; color: #ffffff;">MAP&STATS</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="providerlist.html" style="padding-left: 45px; padding-right: 45px; color: #ffffff;">PROVIDERS LIST</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="map&directions.html" style="padding-left: 45px; padding-right: 45px; color: #ffffff;">MAP&DIRECTIONS</a>
-        </li> 
-        <li class="nav-item">
           <a class="nav-link" href="additionalinfo.html" style="padding-left: 45px; padding-right: 45px; color: #ffffff;">ADDITIONAL INFO</a>
         </li>               
       </ul>
@@ -45,22 +36,20 @@
     </nav>
 
   <div class="container">
-    <div class="row">    
-      <!-- <div class="col-md-5" id="chart">
-        <canvas id="doughnutChart"></canvas>
-      </div> -->
-      <div class="col-md-7" id="levelText">
+    <div  id="threatStuff">    
+      <div id="levelText">
         <h1>THREAT LEVEL: <span id="threatLevel" class="badge">Calculating...</span></h1>
       </div>
+      <div id="message"></div>
     </div>
-    <div id="message"></div>
+    
     <div class="row">
       <div class="col-lg-7" id="map-container">
         <div id="google-map"></div>
       </div>
       <div class="col-lg-5" id="directions-list"></div>
     </div>
-    <div id="providers">
+    <!-- <div id="providers">
       <div class="row">
         <div id="walgreens">
           <h2>Walgreens</h2>
@@ -75,7 +64,7 @@
           </ul>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 
   

@@ -23,6 +23,7 @@ $( document ).ready(function() {
         else if(localStorage.getItem('button-click')){
             console.log('Yup, they clicked a button')
             calculateThreat();
+            initMap();
             walgreensAPI();
             medicareInfo();
         }
@@ -70,6 +71,7 @@ $( document ).ready(function() {
             pushToFirebase()
 
             calculateThreat();
+            initMap();
             walgreensAPI();
             medicareInfo();
         })
@@ -99,7 +101,8 @@ $( document ).ready(function() {
             //the city doesn't exist
             if(response.status === 'ZERO_RESULTS'){
                 var msg = "No results found! Please search for another city"
-                console.log(msg);
+                $('#message').text(msg)
+                $('#threatLevel').text('?')
             }
             //city exists
             else{

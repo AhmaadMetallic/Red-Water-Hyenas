@@ -80,7 +80,6 @@ input:-ms-input-placeholder {
 
 #most-searched{
   display: flex;
-  padding: 0 10%;
   flex-wrap: wrap;  
   justify-content: center;
 }
