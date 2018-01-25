@@ -399,13 +399,15 @@ function initMap() {
         });
 
         createWalgreensMarker()
+        createMedicareMarker()
       
-        // var marker = new google.maps.Marker({
-        //   position: myLatLng,
-        //   map: map,
-        //   title: 'Hello World!'
-        // });
-    }, 1000) //wait for geocoding API to do its stuff
+        var marker = new google.maps.Marker({
+          position: myLatLng,
+          map: map,
+          title: 'Start!',
+          icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
+        });
+    }, 1500) //wait for geocoding API to do its stuff
     
 }
 
@@ -441,6 +443,42 @@ function createWalgreensMarker (){
           });
     })
 }
+
+function createMedicareMarker() {
+    var medicare = JSON.parse(localStorage.getItem('medicare'));
+    var geocoder = new google.maps.Geocoder();
+   console.log('updating...')
+    medicare.forEach(function(doc){
+        var address = unUppercase(doc.street_address_1 + ', ' + doc.city) + ', ' + doc.state_code
+        var doctor = unUppercase("Dr. " + doc.first_name + ' ' + doc.last_name_organization_name)
+        console.log(address)
+        geocoder.geocode({'address': address}, function(results, status) {
+            if (status === 'OK') {
+                
+                var infowindow = new google.maps.InfoWindow({
+                    content: '<b>' + doctor + '</b></br>' + address
+                  });
+
+                var marker = new google.maps.Marker({
+                    map: map,
+                    position: results[0].geometry.location,
+                    animation: google.maps.Animation.DROP,
+                    title: doctor,
+                    icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+
+                });
+
+                marker.addListener('click', function() {
+                    infowindow.open(map, marker);
+                });
+            } else {
+              alert('Geocode was not successful for the following reason: ' + status);
+            }
+          });
+
+    })
+    
+  }
 
 function unUppercase (string){
     var words = string.split(' ');
