@@ -34,6 +34,26 @@
 
     </div>
 
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content" style="margin-top: 50%">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Invalid input!</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              Please enter either a city, state (Ex: Atlanta, GA) or a valid U.S. zipcode (Ex: 30338)
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button id="launchModal" style="display:none" type="button" class="btn btn-primary hidden" data-toggle="modal" data-target="#exampleModal">
+        This shouldn't appear onscreen
+      </button>
+
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
     <!-- JQuery -->

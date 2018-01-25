@@ -45,7 +45,7 @@ $( document ).ready(function() {
             location.href = 'threatlevel.html'
         }else{
             //try to have modal here instead
-            $('input').val('Invalid input!')
+            $('#launchModal').click();
         }
     }
     
