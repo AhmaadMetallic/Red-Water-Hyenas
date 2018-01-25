@@ -10,7 +10,7 @@ $( document ).ready(function() {
     firebase.initializeApp(config);
     var database = firebase.database();
 
-    var tweetsNum, population, map
+    var tweetsNum, population, map, directionsService, directionsDisplay //important that these are global! ...maybe try to find a way to make local if time permits
     
     
     //the APIs haven't been called yet
@@ -392,7 +392,9 @@ function initMap() {
             lng: Number(localStorage.getItem('long'))
         };
         
-        
+        directionsService = new google.maps.DirectionsService;
+        directionsDisplay = new google.maps.DirectionsRenderer;
+
         map = new google.maps.Map(document.getElementById('google-map'), {
           zoom: 11,
           center: myLatLng
@@ -480,10 +482,8 @@ function createMedicareMarker() {
     
   }
 
+
   function getDirectionsPath (){
-    var directionsService = new google.maps.DirectionsService;
-    var directionsDisplay = new google.maps.DirectionsRenderer;
-    
     directionsDisplay.setMap(map)
     directionsDisplay.setPanel(document.getElementById('directions-list'))
     console.log('Running')
