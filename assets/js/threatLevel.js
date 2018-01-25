@@ -299,7 +299,7 @@ $( document ).ready(function() {
         }).done(function(response){
             localStorage.setItem('walgreens', JSON.stringify(response.stores));
             console.log(JSON.parse(localStorage.getItem('walgreens')))
-            updateDOMwalgreens()
+            // updateDOMwalgreens()
 
         }).fail(function(jqXHR, textStatus, errorThrown) {
             console.log('ERROR', errorThrown)
@@ -330,7 +330,7 @@ $( document ).ready(function() {
             })
             localStorage.setItem('medicare', JSON.stringify(docArray));
             console.log(JSON.parse(localStorage.getItem('medicare')));
-            updateDOMmedicare();
+            // updateDOMmedicare();
         })
     }
 
@@ -409,7 +409,7 @@ function initMap() {
           title: 'Start!',
           icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
         });
-    }, 1500) //wait for geocoding API to do its stuff
+    }, 2500) //wait for geocoding API to do its stuff
     
 }
 
@@ -463,6 +463,8 @@ function createMedicareMarker() {
         geocoder.geocode({'address': address}, function(results, status) {
             if (status === 'OK') {
                 
+                console.log('Results', results[0].geometry)
+
                 var infowindow = new google.maps.InfoWindow({
                     content: '<b>' + doctor + '</b></br>' + address
                   });
