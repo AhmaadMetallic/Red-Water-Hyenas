@@ -428,7 +428,7 @@ function createWalgreensMarker (){
         var hours = 'Store hours: ' + location.storeOpenTime + '-' + location.storeCloseTime;
 
         var infowindow = new google.maps.InfoWindow({
-            content: '<b>Walgreens</b></br>' + address + '</br>' + phNumber + '</br>' + hours
+            content: '<b>Walgreens</b></br>' + address + '</br>' + phNumber + '</br>' + hours + '<div class="get-dir" data-latlng=' + JSON.stringify(latLong) + '>Get Directions</div>' 
           });
   
         var marker = new google.maps.Marker({
@@ -480,6 +480,30 @@ function createMedicareMarker() {
     
   }
 
+  function getDirectionsPath (){
+    var directionsService = new google.maps.DirectionsService;
+    var directionsDisplay = new google.maps.DirectionsRenderer;
+    
+    directionsDisplay.setMap(map)
+    directionsDisplay.setPanel(document.getElementById('directions-list'))
+    console.log('Running')
+    directionsService.route({
+        origin: {
+            lat: Number(localStorage.getItem('lat')),
+            lng: Number(localStorage.getItem('long'))
+        },
+        destination: JSON.parse($(this).attr('data-latlng')),
+        travelMode: 'DRIVING'
+      }, function(response, status) {
+        if (status === 'OK') {
+            console.log('yay!')
+          directionsDisplay.setDirections(response);
+        } else {
+          window.alert('Directions request failed due to ' + status);
+        }
+      });
+  }
+
 function unUppercase (string){
     var words = string.split(' ');
     words.forEach(function(word, ind){
@@ -487,4 +511,6 @@ function unUppercase (string){
     })
     var newString = words.join(' ');
     return newString;
-}   
+}
+
+$('#google-map').on('click', '.get-dir', getDirectionsPath);
