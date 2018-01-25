@@ -428,9 +428,15 @@ function createWalgreensMarker (){
         var address = unUppercase(location.stadd + ', ' + location.stct) + ', ' + location.stst;
         var phNumber = location.stph.slice(0,5) + ' ' + location.stph.slice(5,8) + '-' + location.stph.slice(8,12);
         var hours = 'Store hours: ' + location.storeOpenTime + '-' + location.storeCloseTime;
+        var directionsOptions = '<form class="get-dir" data-latlng=' + JSON.stringify(latLong)                                  + ' action="">' +
+                                    '<input type="radio" name="directions" value="DRIVING">Drive ' +
+                                    '<input type="radio" name="directions" value="WALKING">Walk '+
+                                    '<input type="radio" name="directions" value="TRANSIT">Public Transit'+
+                                '</form>'
+
 
         var infowindow = new google.maps.InfoWindow({
-            content: '<b>Walgreens</b></br>' + address + '</br>' + phNumber + '</br>' + hours + '<div class="get-dir" data-latlng=' + JSON.stringify(latLong) + '>Get Directions</div>' 
+            content: '<b>Walgreens</b></br>' + address + '</br>' + phNumber + '</br>' + hours + '</br>' + directionsOptions
           });
   
         var marker = new google.maps.Marker({
@@ -486,20 +492,28 @@ function createMedicareMarker() {
   function getDirectionsPath (){
     directionsDisplay.setMap(map)
     directionsDisplay.setPanel(document.getElementById('directions-list'))
+    
+    var travelMode = $(this).attr('value')
+    var destination = JSON.parse($(this).parent().attr('data-latlng'))
+
+   
     console.log('Running')
     directionsService.route({
         origin: {
             lat: Number(localStorage.getItem('lat')),
             lng: Number(localStorage.getItem('long'))
         },
-        destination: JSON.parse($(this).attr('data-latlng')),
-        travelMode: 'DRIVING'
+        destination: destination,
+        travelMode: travelMode
       }, function(response, status) {
         if (status === 'OK') {
             console.log('yay!')
+            $('#directions-list').empty()
           directionsDisplay.setDirections(response);
         } else {
           window.alert('Directions request failed due to ' + status);
+          $
+          ('#directions-list').html('<div id="directions-error">Unable to find directions at this time. Please try another method or try again later</div>')
         }
       });
   }
@@ -513,4 +527,6 @@ function unUppercase (string){
     return newString;
 }
 
-$('#google-map').on('click', '.get-dir', getDirectionsPath);
+// $('#google-map').on('click', '.get-dir', getDirectionsPath);
+
+$('#google-map').on('change', 'input[type=radio][name=directions]', getDirectionsPath);
