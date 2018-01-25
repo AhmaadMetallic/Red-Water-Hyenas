@@ -10,7 +10,7 @@ $( document ).ready(function() {
     firebase.initializeApp(config);
     var database = firebase.database();
 
-    var tweetsNum, population, map, directionsService, directionsDisplay //important that these are global! ...maybe try to find a way to make local if time permits
+    var tweetsNum, population //important that these are global! ...maybe try to find a way to make local if time permits
     
     
     //the APIs haven't been called yet
@@ -41,8 +41,9 @@ $( document ).ready(function() {
     else{
         console.log('The APIs have been called already!')
         updateDOMthreat();
-        updateDOMwalgreens();
-        updateDOMmedicare();
+        initMap();
+        createWalgreensMarker();
+        createMedicareMarker();
     }
 
     $('#providers').on('click', 'li', goToMaps)
@@ -127,6 +128,7 @@ $( document ).ready(function() {
             calculateThreat();
             walgreensAPI();
             medicareInfo();
+            initMap();
         })
 
     }
@@ -300,6 +302,7 @@ $( document ).ready(function() {
             localStorage.setItem('walgreens', JSON.stringify(response.stores));
             console.log(JSON.parse(localStorage.getItem('walgreens')))
             // updateDOMwalgreens()
+            createWalgreensMarker()
 
         }).fail(function(jqXHR, textStatus, errorThrown) {
             console.log('ERROR', errorThrown)
@@ -331,6 +334,7 @@ $( document ).ready(function() {
             localStorage.setItem('medicare', JSON.stringify(docArray));
             console.log(JSON.parse(localStorage.getItem('medicare')));
             // updateDOMmedicare();
+            createMedicareMarker()
         })
     }
 
@@ -384,8 +388,10 @@ $( document ).ready(function() {
 
 //-------GOOGLE MAPS-----------------------
 //had to put this outside document.ready or it wouldn't work...
+var map, directionsService, directionsDisplay;
+
 function initMap() {
-    setTimeout(function(){
+   
         console.log('Map Created!')
         var myLatLng = {
             lat: Number(localStorage.getItem('lat')), 
@@ -399,9 +405,6 @@ function initMap() {
           zoom: 11,
           center: myLatLng
         });
-
-        createWalgreensMarker()
-        createMedicareMarker()
       
         var marker = new google.maps.Marker({
           position: myLatLng,
@@ -409,13 +412,14 @@ function initMap() {
           title: 'Start!',
           icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
         });
-    }, 2500) //wait for geocoding API to do its stuff
+    //wait for geocoding API to do its stuff
     
 }
 
 function createWalgreensMarker (){
-    console.log('Creating Markers!')
+    console.log('Creating Walgreens Markers!')
     var walgreens = JSON.parse(localStorage.getItem('walgreens'));
+    console.log('Walgreens: ', walgreens)
     
     walgreens.forEach(function(location, ind){
 
@@ -462,8 +466,6 @@ function createMedicareMarker() {
         console.log(address)
         geocoder.geocode({'address': address}, function(results, status) {
             if (status === 'OK') {
-                
-                console.log('Results', results[0].geometry)
 
                 var infowindow = new google.maps.InfoWindow({
                     content: '<b>' + doctor + '</b></br>' + address
