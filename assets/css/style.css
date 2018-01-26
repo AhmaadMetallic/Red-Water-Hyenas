@@ -150,11 +150,28 @@ body {
     margin-right: 150px;
 }
 
-.row{
+/* .row{
     margin-left:0px;
     margin-right:0px;
-}
+} */
 
 #providers li:hover{
     cursor: pointer;
+}
+
+#google-map{
+    height: 400px;
+}
+
+#threatStuff{
+    justify-content: center;
+    display: inline-flex;
+    flex-direction: column;
+    margin: 20px 0;
+    padding: 0 15px;
+}
+
+#levelText{
+    margin-top: 20px;
+
 }

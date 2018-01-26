@@ -10,15 +10,20 @@ $( document ).ready(function() {
     firebase.initializeApp(config);
     var database = firebase.database();
 
-    var tweetsNum, population
+    var tweetsNum, population //important that these are global! ...maybe try to find a way to make local if time permits
     
     
     //the APIs haven't been called yet
     if(!localStorage.getItem('threatLevel')){
-        //user clicked pre-made button
-        if(localStorage.getItem('button-click')){
+        //user clicks current city button
+        if(localStorage.getItem('current-click')){
+            latLongToZip();
+        }
+        //user clicked pre-made city button
+        else if(localStorage.getItem('button-click')){
             console.log('Yup, they clicked a button')
             calculateThreat();
+            initMap();
             walgreensAPI();
             medicareInfo();
         }
@@ -37,8 +42,9 @@ $( document ).ready(function() {
     else{
         console.log('The APIs have been called already!')
         updateDOMthreat();
-        updateDOMwalgreens();
-        updateDOMmedicare();
+        initMap();
+        createWalgreensMarker();
+        createMedicareMarker();
     }
 
     $('#providers').on('click', 'li', goToMaps)
@@ -65,6 +71,7 @@ $( document ).ready(function() {
             pushToFirebase()
 
             calculateThreat();
+            initMap();
             walgreensAPI();
             medicareInfo();
         })
@@ -94,7 +101,8 @@ $( document ).ready(function() {
             //the city doesn't exist
             if(response.status === 'ZERO_RESULTS'){
                 var msg = "No results found! Please search for another city"
-                console.log(msg);
+                $('#message').text(msg)
+                $('#threatLevel').text('?')
             }
             //city exists
             else{
@@ -123,6 +131,7 @@ $( document ).ready(function() {
             calculateThreat();
             walgreensAPI();
             medicareInfo();
+            initMap();
         })
 
     }
@@ -165,9 +174,7 @@ $( document ).ready(function() {
             
             distDeg  = Math.sqrt(latDist*latDist + longDist*longDist)
             
-
             return distDeg < radiusDeg;
-            
             
         })
 
@@ -297,7 +304,8 @@ $( document ).ready(function() {
         }).done(function(response){
             localStorage.setItem('walgreens', JSON.stringify(response.stores));
             console.log(JSON.parse(localStorage.getItem('walgreens')))
-            updateDOMwalgreens()
+            // updateDOMwalgreens()
+            createWalgreensMarker()
 
         }).fail(function(jqXHR, textStatus, errorThrown) {
             console.log('ERROR', errorThrown)
@@ -328,7 +336,8 @@ $( document ).ready(function() {
             })
             localStorage.setItem('medicare', JSON.stringify(docArray));
             console.log(JSON.parse(localStorage.getItem('medicare')));
-            updateDOMmedicare();
+            // updateDOMmedicare();
+            createMedicareMarker()
         })
     }
 
@@ -367,8 +376,8 @@ $( document ).ready(function() {
         })
         var newString = words.join(' ');
         return newString;
-    }
-
+    }    
+    
     //----------CLICK EVENT FUNCTIONS------------
 
     function goToMaps (){
@@ -379,3 +388,189 @@ $( document ).ready(function() {
           );
     }
 })
+
+//-------GOOGLE MAPS-----------------------
+//had to put this outside document.ready or it wouldn't work...
+var map, directionsService, directionsDisplay;
+
+function initMap() {
+   
+        console.log('Map Created!')
+        var myLatLng = {
+            lat: Number(localStorage.getItem('lat')), 
+            lng: Number(localStorage.getItem('long'))
+        };
+        
+        directionsService = new google.maps.DirectionsService;
+        directionsDisplay = new google.maps.DirectionsRenderer;
+
+        map = new google.maps.Map(document.getElementById('google-map'), {
+          zoom: 11,
+          center: myLatLng
+        });
+      
+        var marker = new google.maps.Marker({
+          position: myLatLng,
+          map: map,
+          title: 'Start!',
+          icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
+        });
+    //wait for geocoding API to do its stuff
+    
+}
+
+function createWalgreensMarker (){
+    console.log('Creating Walgreens Markers!')
+    var walgreens = JSON.parse(localStorage.getItem('walgreens'));
+    console.log('Walgreens: ', walgreens)
+    
+    walgreens.forEach(function(location, ind){
+
+        var latLong = {
+            lat: Number(location.stlat),
+            lng: Number(location.stlng)
+        }
+
+        //set up content of infowindow
+        var address = unUppercase(location.stadd + ', ' + location.stct) + ', ' + location.stst;
+        var phNumber = location.stph.slice(0,5) + ' ' + location.stph.slice(5,8) + '-' + location.stph.slice(8,12);
+        var hours = 'Store hours: ' + location.storeOpenTime + '-' + location.storeCloseTime;
+        var directionsOptions = '<form class="get-dir" data-latlng=' + JSON.stringify(latLong)                                  + ' action="">' +
+                                    '<input type="radio" name="directions" value="DRIVING">Drive ' +
+                                    '<input type="radio" name="directions" value="WALKING">Walk '+
+                                    '<input type="radio" name="directions" value="TRANSIT">Public Transit'+
+                                '</form>'
+
+
+        var infowindow = new google.maps.InfoWindow({
+            content: '<b>Walgreens</b></br>' + address + '</br>' + phNumber + '</br>' + hours + '</br></br>' + directionsOptions
+          });
+  
+        var marker = new google.maps.Marker({
+            position: latLong,
+            animation: google.maps.Animation.DROP,
+            map: map,
+            title: 'Walgreens'
+          });
+        
+          marker.addListener('click', function() {
+            infowindow.open(map, marker);
+          });
+    })
+}
+
+function createMedicareMarker() {
+    var medicare = JSON.parse(localStorage.getItem('medicare'));
+    var geocoder = new google.maps.Geocoder();
+   console.log('updating...')
+    medicare.forEach(function(doc){
+        var address = unUppercase(doc.street_address_1 + ', ' + doc.city) + ', ' + doc.state_code
+        var doctor = unUppercase("Dr. " + doc.first_name + ' ' + doc.last_name_organization_name)
+        var directionsOptions = '<form class="get-dir" data-address="' + address + '" action="">' +
+                                    '<input type="radio" name="directionsMedicare" value="DRIVING">Drive ' +
+                                    '<input type="radio" name="directionsMedicare" value="WALKING">Walk '+
+                                    '<input type="radio" name="directionsMedicare" value="TRANSIT">Public Transit'+
+                                '</form>'
+        
+        console.log(address)
+        geocoder.geocode({'address': address}, function(results, status) {
+            if (status === 'OK') {
+
+                var infowindow = new google.maps.InfoWindow({
+                    content: '<b>' + doctor + '</b></br>' + address + '</br></br>' + directionsOptions
+                  });
+
+                var marker = new google.maps.Marker({
+                    map: map,
+                    position: results[0].geometry.location,
+                    animation: google.maps.Animation.DROP,
+                    title: doctor,
+                    icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+
+                });
+
+                marker.addListener('click', function() {
+                    infowindow.open(map, marker);
+                });
+            } else {
+              alert('Geocode was not successful for the following reason: ' + status);
+            }
+          });
+
+    })
+    
+  }
+
+
+  function getDirectionsPath (){
+    directionsDisplay.setMap(map)
+    directionsDisplay.setPanel(document.getElementById('directions-list'))
+    
+    var travelMode = $(this).attr('value')
+    var destination = JSON.parse($(this).parent().attr('data-latlng'))
+
+   
+    console.log('Running')
+    directionsService.route({
+        origin: {
+            lat: Number(localStorage.getItem('lat')),
+            lng: Number(localStorage.getItem('long'))
+        },
+        destination: destination,
+        travelMode: travelMode
+      }, function(response, status) {
+        if (status === 'OK') {
+            console.log('yay!')
+            $('#directions-list').empty()
+          directionsDisplay.setDirections(response);
+        } else {
+          window.alert('Directions request failed due to ' + status);
+          $
+          ('#directions-list').html('<div id="directions-error">Unable to find directions at this time. Please try another method or try again later</div>')
+        }
+      });
+  }
+
+  function getDirectionsMedicare (){
+    directionsDisplay.setMap(map)
+    directionsDisplay.setPanel(document.getElementById('directions-list'))
+    
+    var travelMode = $(this).attr('value')
+    var destination = $(this).parent().attr('data-address')
+    console.log(destination)
+
+   
+    console.log('Running')
+    directionsService.route({
+        origin: {
+            lat: Number(localStorage.getItem('lat')),
+            lng: Number(localStorage.getItem('long'))
+        },
+        destination: destination,
+        travelMode: travelMode
+      }, function(response, status) {
+        if (status === 'OK') {
+            console.log('yay!')
+            $('#directions-list').empty()
+          directionsDisplay.setDirections(response);
+        } else {
+          window.alert('Directions request failed due to ' + status);
+          $
+          ('#directions-list').html('<div id="directions-error">Unable to find directions at this time. Please try another method or try again later</div>')
+        }
+      });
+  }
+
+function unUppercase (string){
+    var words = string.split(' ');
+    words.forEach(function(word, ind){
+        words[ind] = word.charAt(0) + word.slice(1).toLowerCase();
+    })
+    var newString = words.join(' ');
+    return newString;
+}
+
+// $('#google-map').on('click', '.get-dir', getDirectionsPath);
+
+$('#google-map').on('change', 'input[type=radio][name=directions]', getDirectionsPath);
+$('#google-map').on('change', 'input[type=radio][name=directionsMedicare]', getDirectionsMedicare);
