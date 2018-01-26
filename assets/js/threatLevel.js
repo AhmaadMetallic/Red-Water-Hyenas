@@ -435,7 +435,7 @@ function createWalgreensMarker (){
         var address = unUppercase(location.stadd + ', ' + location.stct) + ', ' + location.stst;
         var phNumber = location.stph.slice(0,5) + ' ' + location.stph.slice(5,8) + '-' + location.stph.slice(8,12);
         var hours = 'Store hours: ' + location.storeOpenTime + '-' + location.storeCloseTime;
-        var directionsOptions = '<form class="get-dir" data-latlng=' + JSON.stringify(latLong)                                  + ' action="">' +
+        var directionsOptions = '<form class="get-dir" data-latlng=' + JSON.stringify(latLong) + ' action="">' +
                                     '<input type="radio" name="directions" value="DRIVING">Drive ' +
                                     '<input type="radio" name="directions" value="WALKING">Walk '+
                                     '<input type="radio" name="directions" value="TRANSIT">Public Transit'+

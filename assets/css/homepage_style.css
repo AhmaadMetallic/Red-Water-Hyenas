@@ -119,16 +119,30 @@ input:-ms-input-placeholder {
 }
 
 @media screen and (max-width: 575px) {
-.navbar  {
-           width:280px;
-           margin-left:5px;
-   }
-#searchBar {
-   font-family: 'Fredoka One', sans-serif;
-   font-size: 30px;
-   color: #ffffff;
-   /* will need to change this for buttons to show */
-   margin: 15% 0 2% 15%;
-   padding-right: 26%;
-}
-}
+    #title {
+        font-family: 'Fredoka One', cursive;
+        color: white;
+        font-size: 55px;
+        text-align: center;
+        padding-top: 18%;
+    }
+    
+    /* .navbar  {
+               width:280px;
+               margin-left:5px;
+       } */
+    #searchBar {
+       font-family: 'Fredoka One', sans-serif;
+       font-size: 30px;
+       color: #ffffff;
+       /* will need to change this for buttons to show */
+       margin: 15% 15% 2% 15%;
+       padding-right: 0;
+       
+    }
+
+    .city-btn{
+        margin: .25em .5em;
+    }
+    }
+    
