@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* For the First Page*/
+=======
+/* For the first page */
+>>>>>>> 93394465b98dcaef4221e10c2bd76766e039f498
 
 .logoBody {
     background-image: url("https://s3.amazonaws.com/ooomf-com-files/8H0UdTsvRFqe03hZkNJr_New%20York%20-%20On%20the%20rock%20-%20Empire%20State%20Building.jpg");
@@ -71,15 +75,25 @@ body {
     float: left;
 }
 
-#levelText {
-    margin: 15% 0 3% 45%;
-    position: absolute;
-}
+/* #levelText {
+    /* margin: 15% 0 3% 45%; */
+    /* position: absolute; */
+/* } */ 
 
 .font-bold {
     color: #f7464a;
 }
 
+<<<<<<< HEAD
+.font-bold {
+    color: #f7464a;
+}
+
+=======
+#threatLevel{
+    background-color: #969696;
+}
+>>>>>>> 93394465b98dcaef4221e10c2bd76766e039f498
 
 /*Map & Stats Page*/
 
@@ -107,9 +121,9 @@ body {
 
 /*Provider List Page*/
 
-.container {
+/* .container {
     margin: 7% 2% 0 2%;
-}
+} */
 
 #providerWrapper {
     background-image: url("https://i.imgur.com/UUvfTfB.jpg");
@@ -134,4 +148,13 @@ body {
     width: 90%;
     text-align: left;
     margin-right: 150px;
+}
+
+.row{
+    margin-left:0px;
+    margin-right:0px;
+}
+
+#providers li:hover{
+    cursor: pointer;
 }
