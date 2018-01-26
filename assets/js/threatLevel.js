@@ -341,32 +341,34 @@ $( document ).ready(function() {
         })
     }
 
-    function updateDOMwalgreens (){
-        var walgreens = JSON.parse(localStorage.getItem('walgreens'));
-        walgreens.forEach(function(location){
-            var wg = $('<li class="wg-location">');
-            var address = unUppercase(location.stadd + ', ' + location.stct) + ', ' + location.stst;
-            var phNumber = location.stph.slice(0,5) + ' ' + location.stph.slice(5,8) + '-' + location.stph.slice(8,12);
-            var hours = 'Store hours: ' + location.storeOpenTime + '-' + location.storeCloseTime;
+
+    //show list of flu shot providers
+    // function updateDOMwalgreens (){
+    //     var walgreens = JSON.parse(localStorage.getItem('walgreens'));
+    //     walgreens.forEach(function(location){
+    //         var wg = $('<li class="wg-location">');
+    //         var address = unUppercase(location.stadd + ', ' + location.stct) + ', ' + location.stst;
+    //         var phNumber = location.stph.slice(0,5) + ' ' + location.stph.slice(5,8) + '-' + location.stph.slice(8,12);
+    //         var hours = 'Store hours: ' + location.storeOpenTime + '-' + location.storeCloseTime;
             
-            wg.attr('data-link', 'https://www.google.com/maps/search/?q=' + address)
-            wg.html(address + '</br>' + phNumber + ' ----- ' + hours);
-            $('#walgreens-list').append(wg);
-        })
-    }
+    //         wg.attr('data-link', 'https://www.google.com/maps/search/?q=' + address)
+    //         wg.html(address + '</br>' + phNumber + ' ----- ' + hours);
+    //         $('#walgreens-list').append(wg);
+    //     })
+    // }
 
-    function updateDOMmedicare (){
-        var medicare = JSON.parse(localStorage.getItem('medicare'));
-        medicare.forEach(function(doc){
-            var doctor = unUppercase("Dr. " + doc.first_name + ' ' + doc.last_name_organization_name)
-            var address = unUppercase(doc.street_address_1 + ', ' + doc.city) + ', ' + doc.state_code
-            var medicare = $('<li class="medicare-location">')
+    // function updateDOMmedicare (){
+    //     var medicare = JSON.parse(localStorage.getItem('medicare'));
+    //     medicare.forEach(function(doc){
+    //         var doctor = unUppercase("Dr. " + doc.first_name + ' ' + doc.last_name_organization_name)
+    //         var address = unUppercase(doc.street_address_1 + ', ' + doc.city) + ', ' + doc.state_code
+    //         var medicare = $('<li class="medicare-location">')
 
-            medicare.html(doctor + '</br>' + address);
-            medicare.attr('data-link', 'https://www.google.com/maps/search/?q=' + address)
-            $('#medicare-list').append(medicare);
-        })
-    }
+    //         medicare.html(doctor + '</br>' + address);
+    //         medicare.attr('data-link', 'https://www.google.com/maps/search/?q=' + address)
+    //         $('#medicare-list').append(medicare);
+    //     })
+    // }
 
     //Change words from all-caps to normal
     function unUppercase (string){
@@ -395,27 +397,59 @@ var map, directionsService, directionsDisplay;
 
 function initMap() {
    
-        console.log('Map Created!')
-        var myLatLng = {
-            lat: Number(localStorage.getItem('lat')), 
-            lng: Number(localStorage.getItem('long'))
-        };
-        
-        directionsService = new google.maps.DirectionsService;
-        directionsDisplay = new google.maps.DirectionsRenderer;
+    console.log('Map Created!')
+    var myLatLng = {
+        lat: Number(localStorage.getItem('lat')), 
+        lng: Number(localStorage.getItem('long'))
+    };
+    
+    directionsService = new google.maps.DirectionsService;
+    directionsDisplay = new google.maps.DirectionsRenderer;
 
-        map = new google.maps.Map(document.getElementById('google-map'), {
-          zoom: 11,
-          center: myLatLng
-        });
-      
-        var marker = new google.maps.Marker({
-          position: myLatLng,
-          map: map,
-          title: 'Start!',
-          icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
-        });
-    //wait for geocoding API to do its stuff
+    map = new google.maps.Map(document.getElementById('google-map'), {
+        zoom: 11,
+        center: myLatLng
+    });
+    
+    var marker = new google.maps.Marker({
+        position: myLatLng,
+        map: map,
+        title: 'Start!',
+        icon: 'https://maps.google.com/mapfiles/ms/icons/green-dot.png'
+    });
+
+    //create legend
+    var icons = {
+        walgreens: {
+          name: 'Walgreens',
+          icon: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png'
+        },
+        medicare: {
+          name: 'Medicare Provider',
+          icon: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+        },
+        you: {
+          name: 'You',
+          icon: 'https://maps.google.com/mapfiles/ms/icons/green-dot.png'
+        }
+      };
+
+      var legend = document.getElementById('legend');
+      for (var key in icons) {
+        var type = icons[key];
+        var name = type.name;
+        var icon = type.icon;
+        var div = document.createElement('div');
+        div.innerHTML = '<img src="' + icon + '">' + name + ' ';
+        legend.appendChild(div);
+      }
+
+      map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
+
+      setTimeout(function(){
+          $('#legend').removeClass('invisible')
+      }, 500);
+    
     
 }
 
@@ -443,13 +477,14 @@ function createWalgreensMarker (){
 
 
         var infowindow = new google.maps.InfoWindow({
-            content: '<b>Walgreens</b></br>' + address + '</br>' + phNumber + '</br>' + hours + '</br></br>' + directionsOptions
+            content: '<b>Walgreens</b></br>' + address + '</br>' + '<a href="tel:+1' + location.stph + '">' + phNumber + '</a>' + '</br>' + hours + '</br></br>' + directionsOptions
           });
   
         var marker = new google.maps.Marker({
             position: latLong,
             animation: google.maps.Animation.DROP,
             map: map,
+            icon: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
             title: 'Walgreens'
           });
         
@@ -485,7 +520,7 @@ function createMedicareMarker() {
                     position: results[0].geometry.location,
                     animation: google.maps.Animation.DROP,
                     title: doctor,
-                    icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+                    icon: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png'
 
                 });
 

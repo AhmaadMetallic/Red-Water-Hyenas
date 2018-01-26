@@ -152,6 +152,24 @@ body {
     height: 400px;
 }
 
+#legend {
+    font-family: Roboto, Arial, sans-serif;
+    color: rgb(86, 86, 86);
+    background: #fff;
+    padding: 5px;
+    display: flex;
+    font-size: 11px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
+    background-color: rgb(255, 255, 255);
+    margin-left: 10px;
+
+  }
+
+#legend img {
+    height: 16px;
+    width: 16px;
+}
+
 #threatStuff{
     justify-content: center;
     display: inline-flex;
