@@ -118,6 +118,11 @@ input:-ms-input-placeholder {
     transition: all .5s;
 }
 
+#currentLoc-btn:hover{
+    background-color: rgb(204, 165, 36);
+    transition: all .5s;
+}
+
 @media screen and (max-width: 575px) {
     #title {
         font-family: 'Fredoka One', cursive;
@@ -142,6 +147,10 @@ input:-ms-input-placeholder {
     }
 
     .city-btn{
+        margin: .25em .5em;
+    }
+
+    #currentLoc-btn{
         margin: .25em .5em;
     }
     }

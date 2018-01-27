@@ -21,7 +21,6 @@ $( document ).ready(function() {
         }
         //user clicked pre-made city button
         else if(localStorage.getItem('button-click')){
-            console.log('Yup, they clicked a button')
             calculateThreat();
             initMap();
             walgreensAPI();
@@ -29,18 +28,15 @@ $( document ).ready(function() {
         }
         //the user entered a city
         else if(localStorage.getItem('city')){
-            console.log('CITY');
             cityToZLL();
         }
         //user entered zip code
         else if(localStorage.getItem('zipCode')){
-            console.log('ZIPCODE');
             zipToLatLong();
         }
     }
     //the APIs have been called
     else{
-        console.log('The APIs have been called already!')
         updateDOMthreat();
         initMap();
         createWalgreensMarker();
@@ -56,7 +52,6 @@ $( document ).ready(function() {
         var url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + zipCode + '&key=AIzaSyA6IzOwL3Sg_yNo0COz67cN8b8Xt330qdE'
         
         $.get(url).done(function(response){
-            console.log(response);
             //lat/long
             var info = response.results[0].geometry.location
             var lat = info.lat,
@@ -106,7 +101,6 @@ $( document ).ready(function() {
             }
             //city exists
             else{
-                console.log(response);
                 localStorage.setItem('lat', response.results[0].geometry.location.lat)
                 localStorage.setItem('long', response.results[0].geometry.location.lng)
                 latLongToZip();
@@ -122,8 +116,6 @@ $( document ).ready(function() {
         var url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + latlng + '&key=AIzaSyA6IzOwL3Sg_yNo0COz67cN8b8Xt330qdE'
 
         $.get(url).done(function(response){
-            console.log(response)
-
             response.results[0].address_components.forEach(updateCityStateZip)
             
             pushToFirebase();
@@ -143,7 +135,6 @@ $( document ).ready(function() {
         var url = 'https://api.census.gov/data/2016/acs/acs5/subject?get=NAME,S0101_C01_001E&for=zip%20code%20tabulation%20area:' + zipCode + '&key=ac21ba4cee033cdd33b527b24debd43baf85c8dd'
         
         $.get(url).done(function(response){
-            console.log(response)
             population = Number(response[1][1]) //global var
         })
 
@@ -152,7 +143,7 @@ $( document ).ready(function() {
 
     function getFluTweets () {
         var url = 'http://api.flutrack.org/?time=7'
-        var herokuUrl = 'https://cors-anywhere.herokuapp.com/' + url
+        var herokuUrl = 'https://stark-chamber-44091.herokuapp.com/' + url
         
         $.get(herokuUrl).done(findTweetsInRadius)
     }
@@ -178,7 +169,6 @@ $( document ).ready(function() {
             
         })
 
-        console.log(nearbyTweets);
         tweetsNum = nearbyTweets.length //global var
     }
 
@@ -187,12 +177,10 @@ $( document ).ready(function() {
         censusData()
         //somehow change this to async later, or include in "done" method
         setTimeout(function(){
-            console.log(tweetsNum)
-            console.log(population)
             var tweetsToPeople = 140
             var percentage = tweetsNum*tweetsToPeople / population
             var threatLevel
-            console.log(percentage)
+
             //change limits if necessary
             if(percentage <= .062){
                 threatLevel = "Low"
@@ -201,7 +189,7 @@ $( document ).ready(function() {
             }else{
                 threatLevel = "Medium"
             }
-            console.log('Threat level: ' + threatLevel)
+
             localStorage.setItem('threatLevel', threatLevel);
 
             updateDOMthreat();
@@ -237,26 +225,20 @@ $( document ).ready(function() {
     function pushToFirebase () {
         var cityName = localStorage.getItem('city')
         database.ref("locations/").orderByChild('city').equalTo(cityName).once("value", function(snapshot) {
-            console.log(snapshot.val());
 
             if(snapshot.val()){
                 
                 snapshot.forEach(function(data) {
-                    console.log('Data Key: ' + data.key);
                     var exists = data.key
                     var count = snapshot.val()[exists].count
-                    console.log(count)
                     count ++
-                    console.log(count)
                     //add 1 to the count if its been searched again
                     
-                        console.log('It already exists!')
                         database.ref('locations/' + exists).update({
                             count: count++
                         })
                     })
             }else{
-                console.log('Creating new entry')
                 database.ref("locations/").push({
                     city: localStorage.getItem('city'),
                     state: localStorage.getItem('state'),
@@ -275,7 +257,7 @@ $( document ).ready(function() {
         var lat = localStorage.getItem('lat');
         var long = localStorage.getItem('long');
         var url = 'https://services-qa.walgreens.com/api/stores/search'
-        var herokuUrl = "https://cors-anywhere.herokuapp.com/" + url
+        var herokuUrl = "https://stark-chamber-44091.herokuapp.com/" + url
 
         var WGobj = 
             {
@@ -303,7 +285,6 @@ $( document ).ready(function() {
             data: JSON.stringify(WGobj),
         }).done(function(response){
             localStorage.setItem('walgreens', JSON.stringify(response.stores));
-            console.log(JSON.parse(localStorage.getItem('walgreens')))
             // updateDOMwalgreens()
             createWalgreensMarker()
 
@@ -318,12 +299,10 @@ $( document ).ready(function() {
         var url = 'https://data.cms.gov/resource/q3yr-x26f.json?city=' + city + '&state_code=' + state + '&provider_type=Internal%20Medicine'
 
         $.get(url).done(function(response){
-            console.log(response);
             var docAddresses = []
             //only return 10 addresses
             var docArray = response.filter(function(doctor, ind){
                 if(docAddresses.length === 0){
-                    console.log(doctor)
                     docAddresses.push(doctor["street_address_1"])
                     return doctor
                 }else if(docAddresses.length < 10){
@@ -335,7 +314,6 @@ $( document ).ready(function() {
                 }
             })
             localStorage.setItem('medicare', JSON.stringify(docArray));
-            console.log(JSON.parse(localStorage.getItem('medicare')));
             // updateDOMmedicare();
             createMedicareMarker()
         })
@@ -397,7 +375,6 @@ var map, directionsService, directionsDisplay;
 
 function initMap() {
    
-    console.log('Map Created!')
     var myLatLng = {
         lat: Number(localStorage.getItem('lat')), 
         lng: Number(localStorage.getItem('long'))
@@ -454,9 +431,7 @@ function initMap() {
 }
 
 function createWalgreensMarker (){
-    console.log('Creating Walgreens Markers!')
     var walgreens = JSON.parse(localStorage.getItem('walgreens'));
-    console.log('Walgreens: ', walgreens)
     
     walgreens.forEach(function(location, ind){
 
@@ -497,7 +472,6 @@ function createWalgreensMarker (){
 function createMedicareMarker() {
     var medicare = JSON.parse(localStorage.getItem('medicare'));
     var geocoder = new google.maps.Geocoder();
-   console.log('updating...')
     medicare.forEach(function(doc){
         var address = unUppercase(doc.street_address_1 + ', ' + doc.city) + ', ' + doc.state_code
         var doctor = unUppercase("Dr. " + doc.first_name + ' ' + doc.last_name_organization_name)
@@ -507,7 +481,6 @@ function createMedicareMarker() {
                                     '<input type="radio" name="directionsMedicare" value="TRANSIT">Public Transit'+
                                 '</form>'
         
-        console.log(address)
         geocoder.geocode({'address': address}, function(results, status) {
             if (status === 'OK') {
 
@@ -528,7 +501,7 @@ function createMedicareMarker() {
                     infowindow.open(map, marker);
                 });
             } else {
-              alert('Geocode was not successful for the following reason: ' + status);
+              console.log('Geocode was not successful for the following reason: ' + status);
             }
           });
 
@@ -544,8 +517,6 @@ function createMedicareMarker() {
     var travelMode = $(this).attr('value')
     var destination = JSON.parse($(this).parent().attr('data-latlng'))
 
-   
-    console.log('Running')
     directionsService.route({
         origin: {
             lat: Number(localStorage.getItem('lat')),
@@ -555,7 +526,6 @@ function createMedicareMarker() {
         travelMode: travelMode
       }, function(response, status) {
         if (status === 'OK') {
-            console.log('yay!')
             $('#directions-list').empty()
           directionsDisplay.setDirections(response);
         } else {
@@ -572,10 +542,7 @@ function createMedicareMarker() {
     
     var travelMode = $(this).attr('value')
     var destination = $(this).parent().attr('data-address')
-    console.log(destination)
 
-   
-    console.log('Running')
     directionsService.route({
         origin: {
             lat: Number(localStorage.getItem('lat')),
@@ -585,13 +552,11 @@ function createMedicareMarker() {
         travelMode: travelMode
       }, function(response, status) {
         if (status === 'OK') {
-            console.log('yay!')
             $('#directions-list').empty()
           directionsDisplay.setDirections(response);
         } else {
-          window.alert('Directions request failed due to ' + status);
-          $
-          ('#directions-list').html('<div id="directions-error">Unable to find directions at this time. Please try another method or try again later</div>')
+          console.log('Directions request failed due to ' + status);
+          $('#directions-list').html('<div id="directions-error">Unable to find directions at this time. Please try another method or try again later</div>')
         }
       });
   }
